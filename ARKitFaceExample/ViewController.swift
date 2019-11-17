@@ -15,7 +15,8 @@ class ViewController: UIViewController, ARSessionDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var tabBar: UITabBar!
-
+    @IBOutlet weak var tableView: UITableView!
+    
     // MARK: Properties
 
     var contentControllers: [VirtualContentType: VirtualContentController] = [:]
