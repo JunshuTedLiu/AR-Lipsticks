@@ -66,6 +66,7 @@ class TexturedFace: NSObject, VirtualContentController {
         material.roughness.contents = #imageLiteral(resourceName: "roughness_1")
         material.diffuse.contents = #imageLiteral(resourceName: "diffuse_1")
         material.specular.contents = #imageLiteral(resourceName: "specular_1")
+        material.normal.contents = #imageLiteral(resourceName: "normal_1")
         material.lightingModel = .physicallyBased
         
         contentNode = SCNNode(geometry: faceGeometry)
