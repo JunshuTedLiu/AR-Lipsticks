@@ -26,13 +26,16 @@ class TexturedFace: NSObject, VirtualContentController {
 
         material.shaderModifiers = [
             SCNShaderModifierEntryPoint.fragment : """
-                //texture2d<float, access::sample> diffuseTexture;
-                //texture2d<float, access::sample> specularTexture;
-                //constexpr sampler mySampler(filter::linear, address::repeat);
-                //float4 specularColor = specularTexture.sample(mySampler, _surface.ambientTexcoord);
+                uniform float ambientLevel = 0.3;
+                uniform float shininess = 40.0;
+                uniform float3 mainColor = float3(245.0 / 255.0, 0.0, 0.0);
+                 //texture2d<float, access::sample> diffuseTexture;
+                 //texture2d<float, access::sample> specularTexture;
+                 //constexpr sampler mySampler(filter::linear, address::repeat);
+                 //float4 specularColor = specularTexture.sample(mySampler, _surface.ambientTexcoord);
                 float4 specularColor = _surface.specular;
                 float3 Normal = _surface.normal;
-                float3 Light = normalize(float3(0.4, 0.5, 0.6));
+                float3 Light = normalize(float3(0.2, 0.3, 1.0));
                 float3 View = _surface.view;
                 float3 Half = normalize(Light + View);
                 float2 s;
@@ -43,7 +46,6 @@ class TexturedFace: NSObject, VirtualContentController {
                 float wrap = 0.2;
                 float scatterWidth = 0.3;
                 float4 scatterColor = float4(0.15, 0.0, 0.0, 1.0); ///// maybe change this??
-                float shininess = 40.0; // ???
                 float NdotL = s.x * 2.0 - 1.0;  // remap from [0, 1] to [-1, 1]
                 float NdotH = s.y * 2.0 - 1.0;
                 float NdotL_wrap = (NdotL + wrap) / (1 + wrap); // wrap lighting
@@ -54,9 +56,9 @@ class TexturedFace: NSObject, VirtualContentController {
                                             NdotL_wrap);
                 float specularIntensity = pow(NdotH, shininess);
                 if (NdotL_wrap <= 0) specularIntensity = 0;
-                float3 sss = diffuse + scatter * scatterColor.rgb;
+                float3 sss = max(diffuse + scatter * scatterColor.rgb, ambientLevel);
 
-                _output.color.rgb = _output.color.rgb * sss + specularIntensity * specularColor.rgb;
+                _output.color.rgb = _output.color.rgb * sss * mainColor + specularIntensity * specularColor.rgb;
 
             """
         ]
@@ -83,10 +85,14 @@ class TexturedFace: NSObject, VirtualContentController {
         let material = faceGeometry.firstMaterial!
 //        if button1Clicked
         if lastButtonClicked == 1 {
-        material.diffuse.contents = #imageLiteral(resourceName: "diffuse_1")
+        material.setValue(NSValue(0.2), forKey: "ambientLevel")
+        material.setValue(NSValue(10.0), forKey: "shininess")
+        material.setValue(NSValue(SCNVector3: SCNVector3Make(155.0 / 255.0, 47.0 / 255.0, 54.0 / 255.0), forKey: "mainColor")
         }
         else if lastButtonClicked == 2{
-            material.diffuse.contents = #imageLiteral(resourceName: "roughness_1")
+        material.setValue(NSValue(0.35), forKey: "ambientLevel")
+        material.setValue(NSValue(40.0), forKey: "shininess")
+        material.setValue(NSValue(SCNVector3: SCNVector3Make(221.0 / 255.0, 78.0 / 255.0, 115.0 / 255.0), forKey: "mainColor")
             
         }
         faceGeometry.update(from: faceAnchor.geometry)
