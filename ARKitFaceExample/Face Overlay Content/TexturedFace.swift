@@ -31,12 +31,12 @@ class TexturedFace: NSObject, VirtualContentController {
                 //constexpr sampler mySampler(filter::linear, address::repeat);
                 //float4 specularColor = specularTexture.sample(mySampler, _surface.ambientTexcoord);
                 float4 specularColor = _surface.specular;
-                vec3 Normal = _surface.normal;
-                vec3 Light = normalize(vec3(0.4, 0.5, 0.6));
-                vec3 View = _surface.view;
-                vec3 Half = normalize(Light + View);
-                vec2 s;
-                s.x = dot(Normal, LightVec);
+                float3 Normal = _surface.normal;
+                float3 Light = normalize(float3(0.4, 0.5, 0.6));
+                float3 View = _surface.view;
+                float3 Half = normalize(Light + View);
+                float2 s;
+                s.x = dot(Normal, Light);
                 s.y = dot(Normal, Half);
                 s = s * 0.5 + 0.5;
                 s.x = min(0.996,s.x);
@@ -53,10 +53,10 @@ class TexturedFace: NSObject, VirtualContentController {
                                     smoothstep(scatterWidth * 2.0, scatterWidth,
                                             NdotL_wrap);
                 float specularIntensity = pow(NdotH, shininess);
-                if (NdotL_wrap <= 0) specular = 0;
-                vec3 sss = diffuse + scatter * scatterColor;
+                if (NdotL_wrap <= 0) specularIntensity = 0;
+                float3 sss = diffuse + scatter * scatterColor.rgb;
 
-                _output.color.rgb = _output.color.rgb * sss + specularIntensity * specularColor;
+                _output.color.rgb = _output.color.rgb * sss + specularIntensity * specularColor.rgb;
 
             """
         ]
