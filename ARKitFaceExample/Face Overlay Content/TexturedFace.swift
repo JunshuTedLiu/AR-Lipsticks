@@ -22,10 +22,27 @@ class TexturedFace: NSObject, VirtualContentController {
         #else
         let faceGeometry = ARSCNFaceGeometry(device: sceneView.device!)!
         let material = faceGeometry.firstMaterial!
+
+        material.shaderModifiers = [
+            SCNShaderModifierEntryPoint.fragment : """
+                texture2d<float, access::sample> diffuseTexture;
+                constexpr sampler mySampler(filter::linear, address::repeat);
+                float value = diffuseTexture.sample(mySampler, _surface.ambientTexcoord).r;
+                if (value < 0.5) {
+                    _output.color.rgb = float3(0.4, 0.8, 1);
+                }
+                else {
+                    _output.color.rgb = float3(0, 0.5, 1);
+                }
+            """
+        ]
         
         //material.ambientOcclusion.contents = #imageLiteral(resourceName: "AO")
         material.roughness.contents = #imageLiteral(resourceName: "roughness_1")
-//        material.diffuse.contents = #imageLiteral(resourceName: "diffuse_1")
+        let diffuseImg = #imageLiteral(resourceName: "diffuse_1")
+        material.diffuse.contents = diffuseImg
+        material.ambient.contents = diffuseImg
+        material.setValue(SCNMaterialProperty(contents: diffuseImg), forKey: "diffuseTexture")
 //        material.roughness.contents = #imageLiteral(resourceName: "roughness_1")
         material.lightingModel = .physicallyBased
         
