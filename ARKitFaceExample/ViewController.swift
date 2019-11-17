@@ -33,6 +33,19 @@ class ViewController: UIViewController, ARSessionDelegate {
             if let anchor = currentFaceAnchor, let node = sceneView.node(for: anchor),
                 let newContent = selectedContentController.renderer(sceneView, nodeFor: anchor) {
                 node.addChildNode(newContent)
+
+                // add light sources
+                let light1 = SCNLight()
+                light1.type = .omni
+                light1.intensity = 50
+                light1.position = SCNVector3(0, 15, 20)
+                node.addChildNode(light1)
+                
+                let light2 = SCNLight()
+                light2.type = .omni
+                light2.intensity = 50
+                light2.position = SCNVector3(0, -15, -10)
+                node.addChildNode(light2)
             }
         }
     }
