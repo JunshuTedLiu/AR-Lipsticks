@@ -8,6 +8,8 @@ Main view controller for the AR experience.
 import ARKit
 import SceneKit
 import UIKit
+//var button1Clicked = false
+var lastButtonClicked = 1
 
 class ViewController: UIViewController, ARSessionDelegate {
     
@@ -15,7 +17,16 @@ class ViewController: UIViewController, ARSessionDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var tabBar: UITabBar!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet var button1: UIButton!
+    @IBAction func button1ActionTriggered(_ sender: Any) {
+//        button1Clicked = !button1Clicked
+        lastButtonClicked = 1
+    }
+    @IBOutlet var button2: UIButton!
+    @IBAction func button2ActionTriggered(_ sender: Any) {
+        lastButtonClicked = 2
+    }
+    
     
     // MARK: Properties
 
@@ -35,18 +46,18 @@ class ViewController: UIViewController, ARSessionDelegate {
                 let newContent = selectedContentController.renderer(sceneView, nodeFor: anchor) {
                 node.addChildNode(newContent)
 
-                // add light sources
-                let light1 = SCNLight()
-                light1.type = .omni
-                light1.intensity = 50
-                light1.position = SCNVector3(0, 15, 20)
-                node.addChildNode(light1)
-                
-                let light2 = SCNLight()
-                light2.type = .omni
-                light2.intensity = 50
-                light2.position = SCNVector3(0, -15, -10)
-                node.addChildNode(light2)
+//                // add light sources
+//                let light1 = SCNLight()
+//                light1.type = .omni
+//                light1.intensity = 50
+//                light1.position = SCNVector3(0, 15, 20)
+//                node.addChildNode(light1)
+//
+//                let light2 = SCNLight()
+//                light2.type = .omni
+//                light2.intensity = 50
+//                light2.position = SCNVector3(0, -15, -10)
+//                node.addChildNode(light2)
             }
         }
     }

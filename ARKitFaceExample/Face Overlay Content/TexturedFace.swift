@@ -23,26 +23,33 @@ class TexturedFace: NSObject, VirtualContentController {
         let faceGeometry = ARSCNFaceGeometry(device: sceneView.device!)!
         let material = faceGeometry.firstMaterial!
 
-        material.shaderModifiers = [
-            SCNShaderModifierEntryPoint.fragment : """
-                texture2d<float, access::sample> diffuseTexture;
-                constexpr sampler mySampler(filter::linear, address::repeat);
-                float value = diffuseTexture.sample(mySampler, _surface.ambientTexcoord).r;
-                if (value < 0.5) {
-                    _output.color.rgb = float3(0.4, 0.8, 1);
-                }
-                else {
-                    _output.color.rgb = float3(0, 0.5, 1);
-                }
-            """
-        ]
+//        material.shaderModifiers = [
+//            SCNShaderModifierEntryPoint.fragment : """
+//                texture2d<float, access::sample> diffuseTexture;
+//                constexpr sampler mySampler(filter::linear, address::repeat);
+//                float value = diffuseTexture.sample(mySampler, _surface.ambientTexcoord).r;
+//                if (value < 0.5) {
+//                    _output.color.rgb = float3(0.4, 0.8, 1);
+//                }
+//                else {
+//                    _output.color.rgb = float3(0, 0.5, 1);
+//                }
+//            """
+//        ]
         
         //material.ambientOcclusion.contents = #imageLiteral(resourceName: "AO")
         material.roughness.contents = #imageLiteral(resourceName: "roughness_1")
         let diffuseImg = #imageLiteral(resourceName: "diffuse_1")
         material.diffuse.contents = diffuseImg
         material.ambient.contents = diffuseImg
-        material.setValue(SCNMaterialProperty(contents: diffuseImg), forKey: "diffuseTexture")
+//        if button1Clicked
+//        if lastButtonClicked == 1 {
+//        material.diffuse.contents = diffuseImg
+//        }
+//        else {
+//            material.diffuse.contents = #imageLiteral(resourceName: "roughness_1")
+//            
+//        }
 //        material.roughness.contents = #imageLiteral(resourceName: "roughness_1")
         material.lightingModel = .physicallyBased
         
@@ -57,6 +64,15 @@ class TexturedFace: NSObject, VirtualContentController {
             let faceAnchor = anchor as? ARFaceAnchor
             else { return }
         
+        let material = faceGeometry.firstMaterial!
+//        if button1Clicked
+        if lastButtonClicked == 1 {
+        material.diffuse.contents = #imageLiteral(resourceName: "diffuse_1")
+        }
+        else if lastButtonClicked == 2{
+            material.diffuse.contents = #imageLiteral(resourceName: "roughness_1")
+            
+        }
         faceGeometry.update(from: faceAnchor.geometry)
     }
 
